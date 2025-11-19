@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>TugasKu PRO - Manajemen Tugas Premium</title>
-  <meta name="app-version" content="5.9.2">
+  <meta name="app-version" content="5.9.3">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="icon" type="image/png" href="my-icon.png">
   <link rel="manifest" href="manifest.json">
@@ -1066,6 +1066,7 @@
     .menu-item:nth-child(7) { animation-delay: 0.4s; }
     .menu-item:nth-child(8) { animation-delay: 0.45s; }
     .menu-item:nth-child(9) { animation-delay: 0.5s; }
+    .menu-item:nth-child(10) { animation-delay: 0.55s; }
     
     .menu-item:hover {
       background: rgba(255,255,255,0.05);
@@ -3121,6 +3122,13 @@
         
         <div class="menu-divider"></div>
         
+        <!-- Menu Baca Selengkapnya -->
+        <div class="menu-item" data-action="readmore">
+          <span>📖</span> Baca Selengkapnya
+        </div>
+        
+        <div class="menu-divider"></div>
+        
         <!-- Menu Hubungi Kami -->
         <div class="menu-item" data-action="contact">
           <span>📞</span> Hubungi Kami
@@ -3470,7 +3478,7 @@
   <div class="toast" id="toast"></div>
   
   <!-- Watermark -->
-  <div class="watermark">TugasKu PRO v5.9.2</div>
+  <div class="watermark">TugasKu PRO v5.9.3</div>
 </div>
 
 <!-- Task Modal -->
@@ -3941,7 +3949,7 @@
         <li>Dukungan PWA - Dapat diinstall ke layar utama</li>
       </ul>
       <div class="version-info">
-        <p>Versi: 5.9.2 PRO</p>
+        <p>Versi: 5.9.3 PRO</p>
         <p>Dikembangkan dengan ❤️ oleh Tim TugasKu</p>
       </div>
     </div>
@@ -4060,7 +4068,7 @@
 </div>
 
 <script>
-  // Aplikasi TugasKu PRO v5.9.2 - JavaScript Utama
+  // Aplikasi TugasKu PRO v5.9.3 - JavaScript Utama
   document.addEventListener('DOMContentLoaded', function() {
     // Inisialisasi variabel global
     let tasks = [];
@@ -4152,44 +4160,10 @@
       initApp();
     }, 2000);
     
-    // === TAMBAH INI ===
-    function setupServiceWorker() {
-      if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('./sw.js')
-          .then(registration => {
-            console.log('✅ SW registered:', registration);
-            
-            // Cek update
-            registration.update();
-            
-            // Auto reload ketika SW update
-            registration.addEventListener('updatefound', () => {
-              const newWorker = registration.installing;
-              newWorker.addEventListener('statechange', () => {
-                if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                  console.log('🔄 SW updated, reloading...');
-                  setTimeout(() => {
-                    window.location.reload();
-                  }, 1000);
-                }
-              });
-            });
-          })
-          .catch(error => {
-            console.error('❌ SW registration failed:', error);
-          });
-      }
-    }
-    
     // Fungsi utama untuk inisialisasi aplikasi
     function initApp() {
-      // === TAMBAH INI ===
+      // Setup Service Worker
       setupServiceWorker();
-      
-      // ... kode yang sudah ada
-      loadData();
-      setupEventListeners();
-      // ... dst
       
       // Muat data dari localStorage
       loadData();
@@ -4240,51 +4214,45 @@
       showUpdateNotification();
       
       // Tampilkan toast selamat datang
-      showToast('Selamat datang di TugasKu PRO v5.9.2! Perbaikan bug tema dan notifikasi!', 3000);
+      showToast('Selamat datang di TugasKu PRO v5.9.3! Perbaikan bug penyimpanan data dan performa!', 3000);
       
       // Setup PWA
       setupPWA();
     }
     
+    // Setup Service Worker dengan error handling yang lebih baik
+    function setupServiceWorker() {
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('./sw.js')
+          .then(registration => {
+            console.log('✅ SW registered:', registration);
+            
+            // Cek update
+            registration.update();
+            
+            // Auto reload ketika SW update
+            registration.addEventListener('updatefound', () => {
+              const newWorker = registration.installing;
+              newWorker.addEventListener('statechange', () => {
+                if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                  console.log('🔄 SW updated, reloading...');
+                  setTimeout(() => {
+                    window.location.reload();
+                  }, 1000);
+                }
+              });
+            });
+          })
+          .catch(error => {
+            console.error('❌ SW registration failed:', error);
+            // Fallback: tetap jalankan aplikasi tanpa service worker
+            console.log('Aplikasi berjalan tanpa service worker');
+          });
+      }
+    }
+    
     // Setup PWA functionality
     function setupPWA() {
-      // Service Worker Registration dengan error handling yang lebih baik
-      if ('serviceWorker' in navigator) {
-        window.addEventListener('load', function() {
-          // Gunakan path relatif untuk service worker
-          navigator.serviceWorker.register('./sw.js')
-            .then(function(registration) {
-              console.log('ServiceWorker registration successful with scope: ', registration.scope);
-              
-              // Check for updates
-              registration.addEventListener('updatefound', () => {
-                const newWorker = registration.installing;
-                console.log('Service Worker update found!', newWorker);
-                
-                newWorker.addEventListener('statechange', () => {
-                  if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                    showToast('Update tersedia! Refresh untuk mendapatkan versi terbaru.', 5000);
-                  }
-                });
-              });
-            })
-            .catch(function(error) {
-              console.log('ServiceWorker registration failed: ', error);
-              // Fallback: tetap jalankan aplikasi tanpa service worker
-              console.log('Aplikasi berjalan tanpa service worker');
-            });
-        });
-
-        // Listen for claiming of service worker
-        let refreshing = false;
-        navigator.serviceWorker.addEventListener('controllerchange', () => {
-          if (!refreshing) {
-            window.location.reload();
-            refreshing = true;
-          }
-        });
-      }
-
       // PWA Install Prompt dengan improvements
       window.addEventListener('beforeinstallprompt', (e) => {
         e.preventDefault();
@@ -4379,13 +4347,13 @@
     // Tampilkan notifikasi update
     function showUpdateNotification() {
       const lastVersion = localStorage.getItem('lastVersion');
-      if (!lastVersion || lastVersion !== '5.9.2') {
+      if (!lastVersion || lastVersion !== '5.9.3') {
         addNotification(
-          '🔄 Update Tersedia! v5.9.2', 
-          'TugasKu PRO telah diperbarui! Perbaikan bug tema, notifikasi deadline yang lebih akurat, dan telah tersedia kontak developer!', 
+          '🔄 Update Tersedia! v5.9.3', 
+          'TugasKu PRO telah diperbarui! Perbaikan bug penyimpanan data, performa lebih baik, dan telah tersedia menu Baca Selengkapnya!', 
           'info'
         );
-        localStorage.setItem('lastVersion', '5.9.2');
+        localStorage.setItem('lastVersion', '5.9.3');
       }
     }
     
@@ -4439,100 +4407,116 @@
       });
     }
     
-    // Muat data dari localStorage - DIPERBARUI untuk tema
+    // Muat data dari localStorage - DIPERBARUI untuk mencegah data hilang
     function loadData() {
-      // Muat tema terlebih dahulu untuk mencegah flash tema default
-      const savedSettings = localStorage.getItem('tugasKu_settings');
-      if (savedSettings) {
-        appSettings = JSON.parse(savedSettings);
+      try {
+        // Muat pengaturan terlebih dahulu
+        const savedSettings = localStorage.getItem('tugasKu_settings');
+        if (savedSettings) {
+          appSettings = JSON.parse(savedSettings);
+        }
+        
+        // Terapkan tema setelah semua data dimuat
+        setTimeout(() => {
+          applyTheme(appSettings.theme);
+        }, 100);
+        
+        // Muat tugas
+        const savedTasks = localStorage.getItem('tugasKu_tasks');
+        if (savedTasks) {
+          tasks = JSON.parse(savedTasks);
+        }
+        
+        // Muat jadwal
+        const savedSchedules = localStorage.getItem('tugasKu_schedules');
+        if (savedSchedules) {
+          schedules = JSON.parse(savedSchedules);
+        }
+        
+        // Muat catatan
+        const savedNotes = localStorage.getItem('tugasKu_notes');
+        if (savedNotes) {
+          notes = JSON.parse(savedNotes);
+        }
+        
+        // Muat catatan tanggal
+        const savedDateNotes = localStorage.getItem('tugasKu_dateNotes');
+        if (savedDateNotes) {
+          dateNotes = JSON.parse(savedDateNotes);
+        }
+        
+        // Muat profil
+        const savedProfile = localStorage.getItem('tugasKu_profile');
+        if (savedProfile) {
+          userProfile = JSON.parse(savedProfile);
+        }
+        
+        // Muat data produktivitas
+        const savedProductivity = localStorage.getItem('tugasKu_productivity');
+        if (savedProductivity) {
+          productivityData = JSON.parse(savedProductivity);
+        }
+        
+        // Muat pencapaian
+        const savedAchievements = localStorage.getItem('tugasKu_achievements');
+        if (savedAchievements) {
+          achievements = JSON.parse(savedAchievements);
+        }
+        
+        // Muat notifikasi
+        const savedNotifications = localStorage.getItem('tugasKu_notifications');
+        if (savedNotifications) {
+          notifications = JSON.parse(savedNotifications);
+        }
+        
+        // Muat data dashboard
+        const savedDashboard = localStorage.getItem('tugasKu_dashboard');
+        if (savedDashboard) {
+          dashboardData = JSON.parse(savedDashboard);
+        }
+        
+        // Muat pengaturan timer
+        const savedTimerSettings = localStorage.getItem('tugasKu_timerSettings');
+        if (savedTimerSettings) {
+          appSettings.timerSettings = JSON.parse(savedTimerSettings);
+        }
+        
+        // Update timer berdasarkan pengaturan
+        FOCUS_TIME = appSettings.timerSettings.focusDuration * 60;
+        SHORT_BREAK_TIME = appSettings.timerSettings.shortBreakDuration * 60;
+        LONG_BREAK_TIME = appSettings.timerSettings.longBreakDuration * 60;
+        
+        // Set timer ke mode fokus
+        timerSeconds = FOCUS_TIME;
+        updateTimerDisplay();
+        
+        console.log('✅ Data berhasil dimuat dari localStorage');
+      } catch (error) {
+        console.error('❌ Error loading data:', error);
+        showToast('Error memuat data. Aplikasi akan menggunakan data default.', 5000);
       }
-      
-      // Terapkan tema sebelum konten dimuat
-      applyTheme(appSettings.theme);
-      
-      // Muat tugas
-      const savedTasks = localStorage.getItem('tugasKu_tasks');
-      if (savedTasks) {
-        tasks = JSON.parse(savedTasks);
-      }
-      
-      // Muat jadwal
-      const savedSchedules = localStorage.getItem('tugasKu_schedules');
-      if (savedSchedules) {
-        schedules = JSON.parse(savedSchedules);
-      }
-      
-      // Muat catatan
-      const savedNotes = localStorage.getItem('tugasKu_notes');
-      if (savedNotes) {
-        notes = JSON.parse(savedNotes);
-      }
-      
-      // Muat catatan tanggal
-      const savedDateNotes = localStorage.getItem('tugasKu_dateNotes');
-      if (savedDateNotes) {
-        dateNotes = JSON.parse(savedDateNotes);
-      }
-      
-      // Muat profil
-      const savedProfile = localStorage.getItem('tugasKu_profile');
-      if (savedProfile) {
-        userProfile = JSON.parse(savedProfile);
-      }
-      
-      // Muat data produktivitas
-      const savedProductivity = localStorage.getItem('tugasKu_productivity');
-      if (savedProductivity) {
-        productivityData = JSON.parse(savedProductivity);
-      }
-      
-      // Muat pencapaian
-      const savedAchievements = localStorage.getItem('tugasKu_achievements');
-      if (savedAchievements) {
-        achievements = JSON.parse(savedAchievements);
-      }
-      
-      // Muat notifikasi
-      const savedNotifications = localStorage.getItem('tugasKu_notifications');
-      if (savedNotifications) {
-        notifications = JSON.parse(savedNotifications);
-      }
-      
-      // Muat data dashboard
-      const savedDashboard = localStorage.getItem('tugasKu_dashboard');
-      if (savedDashboard) {
-        dashboardData = JSON.parse(savedDashboard);
-      }
-      
-      // Muat pengaturan timer
-      const savedTimerSettings = localStorage.getItem('tugasKu_timerSettings');
-      if (savedTimerSettings) {
-        appSettings.timerSettings = JSON.parse(savedTimerSettings);
-      }
-      
-      // Update timer berdasarkan pengaturan
-      FOCUS_TIME = appSettings.timerSettings.focusDuration * 60;
-      SHORT_BREAK_TIME = appSettings.timerSettings.shortBreakDuration * 60;
-      LONG_BREAK_TIME = appSettings.timerSettings.longBreakDuration * 60;
-      
-      // Set timer ke mode fokus
-      timerSeconds = FOCUS_TIME;
-      updateTimerDisplay();
     }
     
-    // Simpan data ke localStorage
+    // Simpan data ke localStorage - DIPERBARUI dengan error handling
     function saveData() {
-      localStorage.setItem('tugasKu_tasks', JSON.stringify(tasks));
-      localStorage.setItem('tugasKu_schedules', JSON.stringify(schedules));
-      localStorage.setItem('tugasKu_notes', JSON.stringify(notes));
-      localStorage.setItem('tugasKu_dateNotes', JSON.stringify(dateNotes));
-      localStorage.setItem('tugasKu_profile', JSON.stringify(userProfile));
-      localStorage.setItem('tugasKu_settings', JSON.stringify(appSettings));
-      localStorage.setItem('tugasKu_productivity', JSON.stringify(productivityData));
-      localStorage.setItem('tugasKu_achievements', JSON.stringify(achievements));
-      localStorage.setItem('tugasKu_notifications', JSON.stringify(notifications));
-      localStorage.setItem('tugasKu_dashboard', JSON.stringify(dashboardData));
-      localStorage.setItem('tugasKu_timerSettings', JSON.stringify(appSettings.timerSettings));
+      try {
+        localStorage.setItem('tugasKu_tasks', JSON.stringify(tasks));
+        localStorage.setItem('tugasKu_schedules', JSON.stringify(schedules));
+        localStorage.setItem('tugasKu_notes', JSON.stringify(notes));
+        localStorage.setItem('tugasKu_dateNotes', JSON.stringify(dateNotes));
+        localStorage.setItem('tugasKu_profile', JSON.stringify(userProfile));
+        localStorage.setItem('tugasKu_settings', JSON.stringify(appSettings));
+        localStorage.setItem('tugasKu_productivity', JSON.stringify(productivityData));
+        localStorage.setItem('tugasKu_achievements', JSON.stringify(achievements));
+        localStorage.setItem('tugasKu_notifications', JSON.stringify(notifications));
+        localStorage.setItem('tugasKu_dashboard', JSON.stringify(dashboardData));
+        localStorage.setItem('tugasKu_timerSettings', JSON.stringify(appSettings.timerSettings));
+        
+        console.log('✅ Data berhasil disimpan ke localStorage');
+      } catch (error) {
+        console.error('❌ Error saving data:', error);
+        showToast('Error menyimpan data. Coba lagi.', 3000);
+      }
     }
     
     // Fungsi untuk menerapkan tema - DIPERBARUI
@@ -4744,7 +4728,6 @@
         }
       });
       
-      // === TAMBAH INI DI AKHIR FUNCTION ===
       // Force check for updates setiap 5 menit
       setInterval(() => {
         if ('serviceWorker' in navigator) {
@@ -6422,6 +6405,9 @@
       switch(action) {
         case 'portfolio':
           window.open('https://portofolio-rahmatsite.vercel.app', '_blank');
+          break;
+        case 'readmore':
+          window.open('https://zenzxzuploader.koyeb.app/uploads/1763428884122.html', '_blank');
           break;
         case 'contact':
           openContactModal();

@@ -1,17 +1,15 @@
 {
-  "name": "TugasKu PRO - Manajemen Tugas Premium",
+  "name": "TugasKu PRO",
   "short_name": "TugasKu PRO",
-  "description": "Aplikasi manajemen tugas premium dengan fitur lengkap untuk produktivitas maksimal",
-  "version": "5.4.0",
-  "start_url": "/",
+  "description": "Aplikasi manajemen tugas premium untuk pelajar dan mahasiswa",
+  "start_url": "./",
   "display": "standalone",
   "background_color": "#0f172a",
   "theme_color": "#8B5CF6",
   "orientation": "portrait-primary",
-  "scope": "/",
+  "scope": "./",
   "lang": "id",
-  "dir": "ltr",
-  "categories": ["productivity", "education", "utilities"],
+  "categories": ["productivity", "education"],
   "icons": [
     {
       "src": "icon-192.png",
@@ -24,47 +22,20 @@
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
-    },
-    {
-      "src": "my-icon.png",
-      "sizes": "144x144",
-      "type": "image/png"
     }
   ],
   "screenshots": [
     {
-      "src": "splash.png",
-      "sizes": "640x1136",
+      "src": "screenshot-wide.png",
+      "sizes": "1280x720",
       "type": "image/png",
-      "form_factor": "narrow"
-    }
-  ],
-  "related_applications": [],
-  "prefer_related_applications": false,
-  "shortcuts": [
-    {
-      "name": "Tambah Tugas Baru",
-      "short_name": "Tambah Tugas",
-      "description": "Buat tugas baru dengan cepat",
-      "url": "/?action=add-task",
-      "icons": [
-        {
-          "src": "my-icon.png",
-          "sizes": "96x96"
-        }
-      ]
+      "form_factor": "wide"
     },
     {
-      "name": "Lihat Statistik",
-      "short_name": "Statistik",
-      "description": "Lihat statistik produktivitas",
-      "url": "/?action=stats",
-      "icons": [
-        {
-          "src": "my-icon.png",
-          "sizes": "96x96"
-        }
-      ]
+      "src": "screenshot-narrow.png",
+      "sizes": "720x1280",
+      "type": "image/png",
+      "form_factor": "narrow"
     }
   ]
 }
